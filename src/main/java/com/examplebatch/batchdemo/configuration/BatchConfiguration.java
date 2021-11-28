@@ -2,6 +2,7 @@ package com.examplebatch.batchdemo.configuration;
 
 import com.examplebatch.batchdemo.listener.JobCompletionNotificationListener;
 import com.examplebatch.batchdemo.model.Person;
+import com.examplebatch.batchdemo.model.User;
 import com.examplebatch.batchdemo.processor.PersonItemProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -9,9 +10,11 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
+import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
@@ -19,18 +22,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 
 import javax.sql.DataSource;
+import javax.xml.crypto.Data;
 
 @Configuration
 @EnableBatchProcessing
 public class BatchConfiguration {
-
+    private static final String QUERY = "SELECT user_id, first_name, last_name FROM users";
     @Autowired
     public JobBuilderFactory jobBuilderFactory;
     @Autowired
     public StepBuilderFactory stepBuilderFactory;
 
+/*
     @Bean
     public FlatFileItemReader<Person> reader(){
         return new FlatFileItemReaderBuilder<Person>()
@@ -41,6 +47,20 @@ public class BatchConfiguration {
                 .fieldSetMapper(new BeanWrapperFieldSetMapper<>(){{
                     setTargetType(Person.class);
                 }})
+                .build();
+    }
+*/
+
+    @Bean
+    public ItemReader<Person> reader(DataSource dataSource){
+        return new JdbcCursorItemReaderBuilder<Person>()
+                .name("cursorItemReader")
+                .dataSource(dataSource)
+                .sql(QUERY)
+                .rowMapper((rs, rowNum) -> new Person(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3)))
                 .build();
     }
 
@@ -69,10 +89,10 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step step1(JdbcBatchItemWriter<Person> writer){
+    public Step step1(JdbcBatchItemWriter<Person> writer, DataSource dataSource){
         return stepBuilderFactory.get("step1")
                 .<Person,Person>chunk(10)
-                .reader(reader())
+                .reader(reader(dataSource))
                 .processor(processor())
                 .writer(writer)
                 .build();
