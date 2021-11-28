@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 
 import javax.sql.DataSource;
 
@@ -69,12 +71,18 @@ public class BatchConfiguration {
     }
 
     @Bean
-    public Step step1(JdbcBatchItemWriter<Person> writer){
+    public Step step1(TaskExecutor taskExecutor,JdbcBatchItemWriter<Person> writer){
         return stepBuilderFactory.get("step1")
                 .<Person,Person>chunk(10)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer)
+                .taskExecutor(taskExecutor)
                 .build();
+    }
+
+    @Bean
+    public TaskExecutor taskExecutor(){
+        return new SimpleAsyncTaskExecutor("spring-batch");
     }
 }
