@@ -36,21 +36,6 @@ public class BatchConfiguration {
     @Autowired
     public StepBuilderFactory stepBuilderFactory;
 
-/*
-    @Bean
-    public FlatFileItemReader<Person> reader(){
-        return new FlatFileItemReaderBuilder<Person>()
-                .name("personItemReader")
-                .resource(new ClassPathResource("sample-data.csv"))
-                .delimited()
-                .names("personId","firstName", "lastName")
-                .fieldSetMapper(new BeanWrapperFieldSetMapper<>(){{
-                    setTargetType(Person.class);
-                }})
-                .build();
-    }
-*/
-
     @Bean
     public ItemReader<Person> reader(DataSource dataSource){
         return new JdbcCursorItemReaderBuilder<Person>()
