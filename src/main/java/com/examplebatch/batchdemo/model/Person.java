@@ -1,7 +1,5 @@
 package com.examplebatch.batchdemo.model;
 
-import java.math.BigInteger;
-
 public class Person {
     private Integer personId;
     private String firstName;
