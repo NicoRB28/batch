@@ -20,11 +20,11 @@ import org.springframework.kafka.core.KafkaTemplate;
 
 import javax.sql.DataSource;
 
-@EnableBatchProcessing
-@SpringBootApplication
-@RequiredArgsConstructor
+//@EnableBatchProcessing
+//@SpringBootApplication
+//@RequiredArgsConstructor
 public class ProducerApplication {
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         SpringApplication.run(ProducerApplication.class, args);
     }
 
@@ -71,5 +71,5 @@ public class ProducerApplication {
                         rs.getString(2),
                         rs.getString(3)))
                 .build();
-    }
+    }*/
 }

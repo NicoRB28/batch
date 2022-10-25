@@ -24,11 +24,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@EnableBatchProcessing
-@SpringBootApplication
-@RequiredArgsConstructor
+//@EnableBatchProcessing
+//@SpringBootApplication
+//@RequiredArgsConstructor
 public class ConsumerApplication {
-    public static void main(String[] args) {
+   /* public static void main(String[] args) {
         SpringApplication.run(ConsumerApplication.class, args);
     }
 
@@ -87,5 +87,5 @@ public class ConsumerApplication {
                 .processor(processor())
                 .reader(kafkaItemReader())
                 .build();
-    }
+    }*/
 }
