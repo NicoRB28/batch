@@ -6,6 +6,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.step.builder.SimpleStepBuilder;
 import org.springframework.batch.integration.partition.RemotePartitioningWorkerStepBuilderFactory;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
@@ -87,6 +88,10 @@ public class WorkerConfiguration {
                 .<Person, Person> chunk(CHUNK_SIZE)
                 .reader(pagingItemReader(null, null))
                 .processor(itemProcessor())
+                .processor((ItemProcessor<? super Person, ? extends Person>) transaction -> {
+                    System.out.println("PROCESANDO = " + transaction);
+                    return transaction;
+                })
                 .writer(personItemWriter());
         return workerStepBuilder.build();
     }

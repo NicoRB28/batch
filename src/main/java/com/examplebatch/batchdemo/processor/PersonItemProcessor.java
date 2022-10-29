@@ -11,6 +11,7 @@ public class PersonItemProcessor implements ItemProcessor<Person, Person> {
 
     @Override
     public Person process(Person person) throws Exception {
+        System.out.println("NECESITO QUE PASE ALGOOOOOO EN LA APLICACIOOOOOOOON NO ENTiENDO PORque no leeeeeeee*******************************");
         final String firstName = person.getFirstName().toUpperCase();
         final String lastName = person.getLastName().toUpperCase();
         final Integer personId = person.getPersonId();

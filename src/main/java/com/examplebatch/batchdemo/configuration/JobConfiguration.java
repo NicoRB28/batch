@@ -61,6 +61,7 @@ public class JobConfiguration {
     public Step managerStep() {
         return managerStepBuilderFactory.get("managerStep")
                 .partitioner("workerStep", rangePartitioner(null, null))
+                .gridSize(10)
                 .outputChannel(requestForWorkers())
                 .inputChannel(repliesFromWorkers())
                 .jobExplorer(jobExplorer)
@@ -80,7 +81,7 @@ public class JobConfiguration {
     }
 
     @Bean
-    public IntegrationFlow outBoundFlow(KafkaTemplate kafkaTemplate) {
+    public IntegrationFlow outBoundFlow(KafkaTemplate<Integer, Person> kafkaTemplate) {
         return IntegrationFlows
                 .from(requestForWorkers())
                 .handle(Kafka.outboundChannelAdapter(kafkaTemplate).topic("requestForWorkers"))

@@ -6,6 +6,7 @@ import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,8 +28,10 @@ public class JobController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public long launch(@RequestParam Integer minId, @RequestParam Integer maxId) throws JobInstanceAlreadyExistsException, NoSuchJobException, JobParametersInvalidException {
-        return this.jobOperator.start("job", String.format("minId=%s, maxId=%s,date=%s", minId, maxId, System.currentTimeMillis()));
+    public ResponseEntity<Long> launch(@RequestParam Integer minId, @RequestParam Integer maxId) throws JobInstanceAlreadyExistsException, NoSuchJobException, JobParametersInvalidException {
+        Long job = this.jobOperator.start("job", String.format("minId=%s, maxId=%s,date=%s", minId, maxId, System.currentTimeMillis()));
+
+        return ResponseEntity.ok(job);
     }
 
     @GetMapping("/health")
